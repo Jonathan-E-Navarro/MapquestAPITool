@@ -1,36 +1,32 @@
-#Jonathan Navarro 83144130
+#Created by: Jonathan Navarro 
 #GPS_outputs
 
-import json
+class GPS_outputs(object):
+    def __init__(self):
+        self.parameters = None
 
-class journey_steps:
-    '''
-is the generator class for the directions
-    '''
+    """docstring for GPS_outputs"""
     def directions(self,x):
+        print("Directions: ")
         for items in x['route']['legs']:
+            print("\n")
             for item2 in items ['maneuvers']:
                 print(item2['narrative'])
+        print("\n")
 
-class deltaX:
-    '''
-is the generator class for the total distance
-    '''
     def displacement(self,x:''):
+        print("Total Distance: ")
         print(x['route']['distance'])
+        print("\n")
 
-class elapsedT:
-    '''
-is the generator class for the total time
-    '''
     def deltaT(self,x:''):
+        print("Total Estimated Time: ")
         print((x['route']['time'])/60,'mins')
+        print("\n")
 
-class LATLONG:
-    '''
-is the generator class for the latitude and longitude 
-    '''
+
     def position(self,x:''):
+        print("Latitude and Longitude: ")
         for items in x['route']['locations']:
             lat_long = (items['latLng']['lat'])
             if str(lat_long).startswith('-'):
@@ -42,41 +38,49 @@ is the generator class for the latitude and longitude
                 print(str(latlngEW)[1:-1],'w')
             else:
                 print(latlngEW,'e')
+        print("\n")
 
-def output_param():
-    '''
-generates the output parameters 
-    '''
-    output_list = []
-    in_for_out = input()
-    if int(in_for_out) >= 1:
-        if int(in_for_out) <= 4:
-            for x in range(int(in_for_out)):
-                in_for_param = input()
-                output_list.append(in_for_param)
+    def output_parameters(self):
+        '''
+    generates the output parameters 
+        '''
+        output_list = []
+        in_for_out = input("Enter amount of Parameters: ")
+        if int(in_for_out) >= 1:
+            if int(in_for_out) <= 4:
+                for x in range(int(in_for_out)):
+                    in_for_param = input("Enter Parameter: ")
+                    output_list.append(in_for_param)
+            else:
+                print('try again')
+                output_param()
         else:
             print('try again')
             output_param()
-    else:
-        print('try again')
-        output_param()
-    return output_list
+        self.parameters = output_list
+        return 
+
+
+    def final_results(self,json_result:'loaded json'):
+        '''
+        returns the final readable results
+        '''
+        print("RESULTS: ")
+        print("\n")
+        for items in self.parameters:
+            inputs = str(items.lower())
+            if inputs == 'directions':
+                GPS_outputs.directions(1,json_result)
+            elif inputs == 'distance':
+                GPS_outputs.displacement(1,json_result)
+            elif inputs == 'time':
+                GPS_outputs.deltaT(1,json_result)
+            elif inputs == 'latlong':
+                GPS_outputs.position(1,json_result)
+            else:
+                print('theres an error here')
     
-def final_results(out_param:'',json_result:'loaded json'):
-    '''
-returns the final readable results
-    '''
-    for items in out_param:
-        inputs = str(items.lower())
-        if inputs == 'steps':
-            journey_steps.directions(1,json_result)
-        elif inputs == 'totaldistance':
-            deltaX.displacement(1,json_result)
-        elif inputs == 'total time':
-            elapsedT.deltaT(1,json_result)
-        elif inputs == 'latlong':
-            LATLONG.position(1,json_result)
-        else:
-            print('theres an error here')
+        
+        
             
     
